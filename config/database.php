@@ -21,7 +21,11 @@ if (!$is_local) {
     // Use the bundled DigiCert Global Root G2 certificate downloaded specifically for TiDB Cloud.
     // We use integer values (1007 for MYSQL_ATTR_SSL_CA, 1014 for MYSQL_ATTR_SSL_VERIFY_SERVER_CERT)
     // to prevent deprecation warnings in PHP 8.5+.
-    $options[1007] = __DIR__ . '/cacert.pem';
+    $ca_file = __DIR__ . '/cacert.pem';
+    if (!file_exists($ca_file)) {
+        die("Database connection failed: CA Certificate file not found at " . $ca_file);
+    }
+    $options[1007] = $ca_file;
     $options[1014] = false; // Disable verification for serverless environment compatibility
 }
 
