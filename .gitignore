@@ -1,10 +1,9 @@
-# Dependencies
-/vendor/
+# Local Secrets (credentials)
+config/mail.local.php
+
+# Composer CLI tool
 composer.phar
 composer-setup.php
-
-# Environment / Secrets
-config/mail.php
 
 # Logs
 public/uploads/email_logs.txt
