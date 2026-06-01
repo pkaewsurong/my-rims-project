@@ -47,7 +47,11 @@ if ($route === '' || $route === '/') {
     echo "DB User: " . (getenv('DB_USER') ?: 'root') . "\n";
     echo "PHP Version: " . PHP_VERSION . "\n";
     echo "OpenSSL Loaded: " . (extension_loaded('openssl') ? 'Yes' : 'No') . "\n";
-    echo "PDO Drivers: " . implode(', ', PDO::getAvailableDrivers()) . "\n\n";
+    echo "PDO Drivers: " . implode(', ', PDO::getAvailableDrivers()) . "\n";
+    if (extension_loaded('openssl')) {
+        echo "OpenSSL Version: " . OPENSSL_VERSION_TEXT . "\n";
+        echo "OpenSSL Cert Locations:\n" . print_r(openssl_get_cert_locations(), true) . "\n";
+    }
 
     $host = getenv('DB_HOST') ?: '127.0.0.1';
     $port = getenv('DB_PORT') ?: '3306';
@@ -97,6 +101,43 @@ if ($route === '' || $route === '/') {
         }
         echo "\n";
     }
+
+    // Try mysqli
+    echo "--- Running Case 8: mysqli with SSL (CA) ---\n";
+    try {
+        $link = mysqli_init();
+        mysqli_ssl_set($link, NULL, NULL, $ca_file, NULL, NULL);
+        if (@mysqli_real_connect($link, $host, $username, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
+            echo "SUCCESS: Connected successfully via mysqli!\n";
+            $res = mysqli_query($link, "SELECT VERSION()");
+            $row = mysqli_fetch_row($res);
+            echo "Database Version: " . $row[0] . "\n";
+            mysqli_close($link);
+        } else {
+            echo "FAILED: " . mysqli_connect_error() . "\n";
+        }
+    } catch (\Exception $e) {
+        echo "FAILED (Exception): " . $e->getMessage() . "\n";
+    }
+    echo "\n";
+
+    echo "--- Running Case 9: mysqli with SSL (No CA) ---\n";
+    try {
+        $link = mysqli_init();
+        if (@mysqli_real_connect($link, $host, $username, $password, $dbname, $port, NULL, MYSQLI_CLIENT_SSL)) {
+            echo "SUCCESS: Connected successfully via mysqli (No CA)!\n";
+            $res = mysqli_query($link, "SELECT VERSION()");
+            $row = mysqli_fetch_row($res);
+            echo "Database Version: " . $row[0] . "\n";
+            mysqli_close($link);
+        } else {
+            echo "FAILED: " . mysqli_connect_error() . "\n";
+        }
+    } catch (\Exception $e) {
+        echo "FAILED (Exception): " . $e->getMessage() . "\n";
+    }
+    echo "\n";
+
     exit();
 } elseif ($route === '/login') {
     require __DIR__ . '/../src/controllers/AuthController.php';
