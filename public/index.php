@@ -53,6 +53,25 @@ if ($route === '' || $route === '/') {
         echo "OpenSSL Cert Locations:\n" . print_r(openssl_get_cert_locations(), true) . "\n";
     }
 
+    // Capture phpinfo modules for mysqlnd and pdo_mysql
+    ob_start();
+    phpinfo(INFO_MODULES);
+    $phpinfo = ob_get_clean();
+    
+    // Extract sections of interest using regex
+    echo "=== phpinfo() pdo_mysql & mysqlnd sections ===\n";
+    if (preg_match('/pdo_mysql(.*?)(\n\n|<h2)/s', strip_tags($phpinfo), $matches)) {
+        echo "--- pdo_mysql ---\n" . trim($matches[1]) . "\n\n";
+    } else {
+        echo "--- pdo_mysql section not found ---\n\n";
+    }
+    if (preg_match('/mysqlnd(.*?)(\n\n|<h2)/s', strip_tags($phpinfo), $matches)) {
+        echo "--- mysqlnd ---\n" . trim($matches[1]) . "\n\n";
+    } else {
+        echo "--- mysqlnd section not found ---\n\n";
+    }
+    echo "===============================================\n\n";
+
     $host = getenv('DB_HOST') ?: '127.0.0.1';
     $port = getenv('DB_PORT') ?: '3306';
     $dbname = getenv('DB_NAME') ?: 'project_is';
