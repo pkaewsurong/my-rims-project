@@ -1,0 +1,198 @@
+<?php
+// public/index.php
+
+session_start();
+
+// Include core configurations
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
+
+// Simple Router
+$request_uri = $_SERVER['REQUEST_URI'];
+$parsed_url = parse_url($request_uri);
+$path = $parsed_url['path'] ?? '/';
+
+// Dynamically determine the base path (for subfolder deployments like XAMPP)
+$base_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+if ($base_path === '/') {
+    $base_path = '';
+}
+
+$route = $path;
+if ($base_path !== '' && strpos($route, $base_path) === 0) {
+    $route = substr($route, strlen($base_path));
+}
+// Strip '/public' in case it's still prefixed from hardcoded HTML links
+if (strpos($route, '/public') === 0) {
+    $route = substr($route, 7);
+}
+if ($route === '') {
+    $route = '/';
+}
+
+// Route handling
+if ($route === '' || $route === '/') {
+    require __DIR__ . '/../views/welcome.php';
+} elseif ($route === '/login') {
+    require __DIR__ . '/../src/controllers/AuthController.php';
+    loginAction($pdo);
+} elseif ($route === '/register') {
+    require __DIR__ . '/../src/controllers/AuthController.php';
+    registerAction($pdo);
+} elseif ($route === '/logout') {
+    require __DIR__ . '/../src/controllers/AuthController.php';
+    logoutAction();
+} elseif ($route === '/projects') {
+    require __DIR__ . '/../src/controllers/ProjectController.php';
+    indexAction($pdo);
+} elseif ($route === '/projects/all') {
+    require __DIR__ . '/../src/controllers/ProjectController.php';
+    allAction($pdo);
+} elseif (preg_match('#^/projects/(\d+)$#', $route, $matches)) {
+    // Dynamic route for project details: /projects/{id}
+    require __DIR__ . '/../src/controllers/ProjectController.php';
+    showAction($pdo, $matches[1]);
+} elseif ($route === '/projects/request-closure') {
+    require __DIR__ . '/../src/controllers/ProjectController.php';
+    requestClosureAction($pdo);
+} elseif ($route === '/projects/approve-closure') {
+    require __DIR__ . '/../src/controllers/ProjectController.php';
+    approveClosureAction($pdo);
+} elseif ($route === '/uc8/mockup') {
+    require __DIR__ . '/../src/controllers/Uc8Controller.php';
+    mockupAction($pdo);
+
+} elseif ($route === '/notifications/mark-read') {
+    // Quick inline action for notifications
+    if (isLoggedIn()) {
+        $stmt = $pdo->prepare('UPDATE notifications SET is_read = 1 WHERE user_id = ?');
+        $stmt->execute([authUser()['id']]);
+    }
+    $referer = $_SERVER['HTTP_REFERER'] ?? null;
+    if ($referer) {
+        header('Location: ' . $referer);
+        exit();
+    }
+    redirect('/projects');
+} elseif ($route === '/proposals') {
+    require __DIR__ . '/../src/controllers/ProposalController.php';
+    proposalIndexAction($pdo);
+} elseif (preg_match('#^/proposals/(\d+)$#', $route, $matches)) {
+    require __DIR__ . '/../src/controllers/ProposalController.php';
+    proposalShowAction($pdo, $matches[1]);
+} elseif (preg_match('#^/proposals/(\d+)/edit$#', $route, $matches)) {
+    require __DIR__ . '/../src/controllers/ProposalController.php';
+    proposalEditAction($pdo, $matches[1]);
+} elseif (preg_match('#^/proposals/(\d+)/delete$#', $route, $matches)) {
+    require __DIR__ . '/../src/controllers/ProposalController.php';
+    proposalDeleteAction($pdo, $matches[1]);
+} elseif ($route === '/proposals/create') {
+    require __DIR__ . '/../src/controllers/ProposalController.php';
+    proposalCreateAction($pdo);
+} elseif ($route === '/proposals/store') {
+    require __DIR__ . '/../src/controllers/ProposalController.php';
+    proposalStoreAction($pdo);
+} elseif ($route === '/proposals/update') {
+    require __DIR__ . '/../src/controllers/ProposalController.php';
+    proposalUpdateAction($pdo);
+} elseif ($route === '/proposals/review') {
+    require __DIR__ . '/../src/controllers/ProposalController.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        proposalStoreReviewAction($pdo);
+    } else {
+        proposalReviewAction($pdo);
+    }
+} elseif ($route === '/proposals/budget') {
+    require __DIR__ . '/../src/controllers/BudgetController.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['action_type']) && $_POST['action_type'] === 'source') {
+            addSourceAction($pdo);
+        } else {
+            addLineItemAction($pdo);
+        }
+    } else {
+        manageAction($pdo);
+    }
+} elseif ($route === '/project-files/store') {
+    require __DIR__ . '/../src/controllers/FileController.php';
+    fileStoreAction($pdo);
+} elseif (preg_match('#^/project-files/(\d+)/destroy$#', $route, $matches)) {
+    require __DIR__ . '/../src/controllers/FileController.php';
+    fileDestroyAction($pdo, $matches[1]);
+} elseif ($route === '/progress-reports/create') {
+    require __DIR__ . '/../src/controllers/ProgressReportController.php';
+    progressCreateAction($pdo);
+} elseif ($route === '/progress-reports/store') {
+    require __DIR__ . '/../src/controllers/ProgressReportController.php';
+    progressStoreAction($pdo);
+} elseif ($route === '/research-outputs/create') {
+    require __DIR__ . '/../src/controllers/PublicationController.php';
+    createAction($pdo);
+} elseif ($route === '/research-outputs/store') {
+    require __DIR__ . '/../src/controllers/PublicationController.php';
+    storeAction($pdo);
+} elseif ($route === '/ip-assets/create') {
+    require __DIR__ . '/../src/controllers/IpController.php';
+    createAction($pdo);
+} elseif ($route === '/ip-assets/store') {
+    require __DIR__ . '/../src/controllers/IpController.php';
+    storeAction($pdo);
+} elseif ($route === '/qa') {
+    require __DIR__ . '/../src/controllers/QaController.php';
+    indexAction($pdo);
+} elseif ($route === '/qa/export') {
+    require __DIR__ . '/../src/controllers/QaController.php';
+    exportAction($pdo);
+} elseif ($route === '/reports/final/create') {
+    require __DIR__ . '/../src/controllers/FinalReportController.php';
+    createAction($pdo);
+} elseif ($route === '/reports/final/store') {
+    require __DIR__ . '/../src/controllers/FinalReportController.php';
+    storeAction($pdo);
+} elseif ($route === '/archives') {
+    require __DIR__ . '/../src/controllers/ArchiveController.php';
+    indexAction($pdo);
+} elseif ($route === '/archives/store') {
+    require __DIR__ . '/../src/controllers/ArchiveController.php';
+    storeAction($pdo);
+} elseif ($route === '/archives/settings') {
+    require __DIR__ . '/../src/controllers/ArchiveController.php';
+    settingsStoreAction($pdo);
+} elseif ($route === '/dashboard') {
+    require __DIR__ . '/../src/controllers/DashboardController.php';
+    researchDashboardAction($pdo);
+} elseif ($route === '/metrics') {
+    require __DIR__ . '/../src/controllers/MetricController.php';
+    indexAction($pdo);
+} elseif ($route === '/metrics/sync') {
+    require __DIR__ . '/../src/controllers/MetricController.php';
+    syncAction($pdo);
+} elseif ($route === '/strategic-reports') {
+    require __DIR__ . '/../src/controllers/StrategicReportController.php';
+    strategicReportsAction($pdo);
+} elseif ($route === '/strategic-reports/generate') {
+    require __DIR__ . '/../src/controllers/StrategicReportController.php';
+    generateReportAction($pdo);
+} elseif ($route === '/profile') {
+    require __DIR__ . '/../src/controllers/ProfileController.php';
+    indexAction($pdo);
+} elseif ($route === '/profile/edit') {
+    require __DIR__ . '/../src/controllers/ProfileController.php';
+    editAction($pdo);
+} elseif ($route === '/profile/update') {
+    require __DIR__ . '/../src/controllers/ProfileController.php';
+    updateAction($pdo);
+} elseif ($route === '/dashboard/researchers') {
+    require __DIR__ . '/../src/controllers/DashboardController.php';
+    researchersListAction($pdo);
+} elseif ($route === '/admin/master-data') {
+    require __DIR__ . '/../src/controllers/MasterDataController.php';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        masterDataStoreAction($pdo);
+    } else {
+        masterDataAction($pdo);
+    }
+} else {
+    http_response_code(404);
+    echo "404 Not Found";
+}
