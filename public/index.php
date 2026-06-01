@@ -33,6 +33,67 @@ if ($route === '') {
 // Route handling
 if ($route === '' || $route === '/') {
     require __DIR__ . '/../views/index.html';
+} elseif ($route === '/test-db') {
+    header('Content-Type: text/plain; charset=utf-8');
+    echo "=== DB Connection Diagnostic Test ===\n\n";
+
+    echo "Host: " . (getenv('DB_HOST') ?: '127.0.0.1') . "\n";
+    echo "Port: " . (getenv('DB_PORT') ?: '3306') . "\n";
+    echo "DB Name: " . (getenv('DB_NAME') ?: 'project_is') . "\n";
+    echo "DB User: " . (getenv('DB_USER') ?: 'root') . "\n";
+    echo "PHP Version: " . PHP_VERSION . "\n";
+    echo "OpenSSL Loaded: " . (extension_loaded('openssl') ? 'Yes' : 'No') . "\n";
+    echo "PDO Drivers: " . implode(', ', PDO::getAvailableDrivers()) . "\n\n";
+
+    $host = getenv('DB_HOST') ?: '127.0.0.1';
+    $port = getenv('DB_PORT') ?: '3306';
+    $dbname = getenv('DB_NAME') ?: 'project_is';
+    $username = getenv('DB_USER') ?: 'root';
+    $password = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
+    $charset = 'utf8mb4';
+    $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=$charset";
+
+    $ca_file = dirname(__DIR__) . '/config/cacert.pem';
+    echo "CA File Path: " . $ca_file . "\n";
+    echo "CA File Exists: " . (file_exists($ca_file) ? 'Yes' : 'No') . "\n";
+    if (file_exists($ca_file)) {
+        echo "CA File Size: " . filesize($ca_file) . " bytes\n";
+        echo "CA File Readable: " . (is_readable($ca_file) ? 'Yes' : 'No') . "\n";
+    }
+    echo "\n";
+
+    // Test cases
+    $tests = [
+        "Case 1: No SSL Options" => [],
+        "Case 2: SSL CA only (1007)" => [1007 => $ca_file],
+        "Case 3: SSL Verify False only (1014 => false)" => [1014 => false],
+        "Case 4: SSL CA & Verify False" => [1007 => $ca_file, 1014 => false],
+        "Case 5: SSL CA & Verify True" => [1007 => $ca_file, 1014 => true],
+        "Case 6: System CA (/etc/ssl/certs/ca-certificates.crt)" => [1007 => '/etc/ssl/certs/ca-certificates.crt'],
+        "Case 7: System CA & Verify False" => [1007 => '/etc/ssl/certs/ca-certificates.crt', 1014 => false],
+    ];
+
+    foreach ($tests as $name => $opts) {
+        echo "--- Running $name ---\n";
+        try {
+            $options = [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES   => false,
+            ];
+            foreach ($opts as $k => $v) {
+                $options[$k] = $v;
+            }
+            $test_pdo = new PDO($dsn, $username, $password, $options);
+            echo "SUCCESS: Connected successfully!\n";
+            $stmt = $test_pdo->query("SELECT VERSION()");
+            echo "Database Version: " . $stmt->fetchColumn() . "\n";
+        } catch (\Exception $e) {
+            echo "FAILED: " . $e->getMessage() . "\n";
+        }
+        echo "\n";
+    }
+    exit();
 } elseif ($route === '/login') {
     require __DIR__ . '/../src/controllers/AuthController.php';
     loginAction($pdo);
