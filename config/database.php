@@ -18,25 +18,11 @@ $options = [
 // Enable SSL/TLS for remote database hosts (like TiDB Cloud)
 $is_local = in_array(strtolower($host), ['127.0.0.1', 'localhost', '::1']);
 if (!$is_local) {
-    // Scan for system CA certificate bundle paths or fallback to /dev/null as a dummy path
-    // to trigger the SSL connection logic.
+    // Use the bundled DigiCert Global Root G2 certificate downloaded specifically for TiDB Cloud.
     // We use integer values (1007 for MYSQL_ATTR_SSL_CA, 1014 for MYSQL_ATTR_SSL_VERIFY_SERVER_CERT)
     // to prevent deprecation warnings in PHP 8.5+.
-    $ca_paths = [
-        '/etc/ssl/certs/ca-certificates.crt',
-        '/etc/pki/tls/certs/ca-bundle.crt',
-        '/etc/ssl/ca-bundle.pem',
-        '/etc/ssl/cert.pem',
-    ];
-    $ca_file = '/dev/null';
-    foreach ($ca_paths as $path) {
-        if (file_exists($path)) {
-            $ca_file = $path;
-            break;
-        }
-    }
-    $options[1007] = $ca_file;
-    $options[1014] = false; // Disable verification to bypass missing certificate store issues
+    $options[1007] = __DIR__ . '/cacert.pem';
+    $options[1014] = true;
 }
 
 try {
