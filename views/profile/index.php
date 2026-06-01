@@ -57,7 +57,7 @@
                     </div>
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <p class="text-xs font-semibold text-slate-500 mb-1">วันที่เข้าร่วม (Joined)</p>
-                        <p class="text-slate-800 font-bold"><?= date('F j, Y', strtotime($user['created_at'])) ?></p>
+                        <p class="text-slate-800 font-bold"><?= !empty($user['created_at']) ? date('F j, Y', strtotime($user['created_at'])) : '-' ?></p>
                     </div>
                 </div>
             </div>
