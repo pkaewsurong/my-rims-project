@@ -6,7 +6,8 @@
 
 class DatabaseSessionHandler implements SessionHandlerInterface
 {
-    private $pdo;
+    private $readData = [];
+    private $readLastActivity = [];
 
     public function __construct(PDO $pdo)
     {
@@ -25,19 +26,43 @@ class DatabaseSessionHandler implements SessionHandlerInterface
 
     public function read($id): string|false
     {
-        $stmt = $this->pdo->prepare('SELECT payload FROM sessions WHERE id = ? LIMIT 1');
+        $stmt = $this->pdo->prepare('SELECT payload, last_activity FROM sessions WHERE id = ? LIMIT 1');
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row ? base64_decode($row['payload']) : '';
+        if ($row) {
+            $data = base64_decode($row['payload']);
+            $this->readData[$id] = $data;
+            $this->readLastActivity[$id] = (int)$row['last_activity'];
+            return $data;
+        }
+        $this->readData[$id] = '';
+        $this->readLastActivity[$id] = 0;
+        return '';
     }
 
     public function write($id, $data): bool
     {
+        // Optimization: Skip database write if the session data is unchanged
+        // AND the last activity timestamp is less than 5 minutes (300 seconds) old.
+        if (isset($this->readData[$id]) && $this->readData[$id] === $data) {
+            $currentTime = time();
+            if (isset($this->readLastActivity[$id]) && ($currentTime - $this->readLastActivity[$id]) < 300) {
+                return true;
+            }
+        }
+
         // Use REPLACE INTO for MySQL/TiDB (INSERT or UPDATE)
         $stmt = $this->pdo->prepare(
             'REPLACE INTO sessions (id, payload, last_activity) VALUES (?, ?, ?)'
         );
-        return $stmt->execute([$id, base64_encode($data), time()]);
+        $result = $stmt->execute([$id, base64_encode($data), time()]);
+        
+        if ($result) {
+            $this->readData[$id] = $data;
+            $this->readLastActivity[$id] = time();
+        }
+        
+        return $result;
     }
 
     public function destroy($id): bool
