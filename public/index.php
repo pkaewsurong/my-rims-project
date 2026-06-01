@@ -32,7 +32,7 @@ if ($route === '') {
 
 // Route handling
 if ($route === '' || $route === '/') {
-    require __DIR__ . '/../views/welcome.php';
+    require __DIR__ . '/../views/index.html';
 } elseif ($route === '/login') {
     require __DIR__ . '/../src/controllers/AuthController.php';
     loginAction($pdo);
@@ -58,10 +58,6 @@ if ($route === '' || $route === '/') {
 } elseif ($route === '/projects/approve-closure') {
     require __DIR__ . '/../src/controllers/ProjectController.php';
     approveClosureAction($pdo);
-} elseif ($route === '/uc8/mockup') {
-    require __DIR__ . '/../src/controllers/Uc8Controller.php';
-    mockupAction($pdo);
-
 } elseif ($route === '/notifications/mark-read') {
     // Quick inline action for notifications
     if (isLoggedIn()) {

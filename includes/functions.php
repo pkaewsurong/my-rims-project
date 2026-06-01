@@ -35,11 +35,17 @@ function authUser() {
 /**
  * Simple redirect helper
  */
-/**
- * Simple redirect helper
- */
 function redirect($path) {
-    header("Location: /public{$path}");
+    $is_vercel = getenv('VERCEL') !== false || isset($_SERVER['VERCEL']);
+    if ($is_vercel) {
+        header("Location: {$path}");
+    } else {
+        $base_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+        if ($base_path === '/' || $base_path === '\\') {
+            $base_path = '';
+        }
+        header("Location: {$base_path}{$path}");
+    }
     exit();
 }
 
