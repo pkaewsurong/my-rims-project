@@ -155,9 +155,16 @@ function url($path) {
 }
 
 /**
- * Send password reset email with reset link and log to public/uploads/email_logs.txt for debugging
+ * Send password reset email using PHPMailer with Gmail SMTP.
+ * Falls back to logging the reset link if SMTP is not configured.
  */
 function sendPasswordResetEmail($email, $resetLink) {
+    // Load Composer autoloader for PHPMailer
+    require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+    // Load mail configuration
+    $mailConfig = require dirname(__DIR__) . '/config/mail.php';
+
     $subject = "รีเซ็ตรหัสผ่านสำหรับระบบ RIMS";
     
     // Create an elegant, responsive HTML email body matching the earth-tone design system
@@ -202,17 +209,48 @@ function sendPasswordResetEmail($email, $resetLink) {
                 &copy; ' . date('Y') . ' Research & Innovation Management System. สงวนลิขสิทธิ์.
             </div>
         </div>
-    </body>
     </html>
     ';
+
+    $emailSent = false;
+    $emailError = '';
+
+    // Only attempt SMTP if credentials are configured
+    if (!empty($mailConfig['username']) && !empty($mailConfig['password'])) {
+        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+
+        try {
+            // SMTP Configuration
+            $mail->isSMTP();
+            $mail->Host       = $mailConfig['host'];
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $mailConfig['username'];
+            $mail->Password   = $mailConfig['password'];
+            $mail->SMTPSecure = $mailConfig['encryption'];
+            $mail->Port       = (int) $mailConfig['port'];
+            $mail->CharSet    = 'UTF-8';
+
+            // Sender & Recipient
+            $fromEmail = $mailConfig['from_email'] ?: $mailConfig['username'];
+            $mail->setFrom($fromEmail, $mailConfig['from_name']);
+            $mail->addAddress($email);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = $message;
+            $mail->AltBody = "สวัสดีครับ/ค่ะ\nท่านได้ส่งคำขอเพื่อรีเซ็ตรหัสผ่านสำหรับเข้าใช้งานระบบ RIMS\nคลิกลิงก์นี้เพื่อตั้งรหัสผ่านใหม่: " . $resetLink . "\n(ลิงก์จะมีอายุการใช้งาน 1 ชั่วโมง)";
+
+            $mail->send();
+            $emailSent = true;
+        } catch (PHPMailer\PHPMailer\Exception $e) {
+            $emailError = $mail->ErrorInfo;
+        }
+    } else {
+        $emailError = 'SMTP credentials not configured in config/mail.php';
+    }
     
-    // Attempt actual email sending
-    $headers = "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
-    $headers .= "From: RIMS Support <noreply@rims-project.local>\r\n";
-    @mail($email, $subject, $message, $headers);
-    
-    // Log the reset email to public/uploads/email_logs.txt
+    // Always log the reset email to public/uploads/email_logs.txt for debugging
     $log_dir = dirname(__DIR__) . '/public/uploads';
     if (!file_exists($log_dir)) {
         @mkdir($log_dir, 0777, true);
@@ -224,6 +262,7 @@ function sendPasswordResetEmail($email, $resetLink) {
     $log_content .= "To: " . $email . "\n";
     $log_content .= "Subject: " . $subject . "\n";
     $log_content .= "Reset Link: " . $resetLink . "\n";
+    $log_content .= "SMTP Status: " . ($emailSent ? "✅ SENT SUCCESSFULLY" : "❌ FAILED - " . $emailError) . "\n";
     $log_content .= "--------------------------------------------------\n";
     $log_content .= "HTML Body (Text Version):\n";
     $log_content .= "  สวัสดีครับ/ค่ะ ท่านได้ส่งคำขอเพื่อรีเซ็ตรหัสผ่านสำหรับเข้าใช้งานระบบ RIMS\n";
@@ -232,7 +271,7 @@ function sendPasswordResetEmail($email, $resetLink) {
     $log_content .= "==================================================\n\n";
     @file_put_contents($log_file, $log_content, FILE_APPEND);
     
-    return true;
+    return $emailSent;
 }
 
 

@@ -147,9 +147,13 @@ function forgotPasswordAction($pdo) {
                 $resetLink = $protocol . '://' . $host . url('/reset-password?token=' . $token . '&email=' . urlencode($email));
 
                 // Send email (and log it)
-                sendPasswordResetEmail($email, $resetLink);
+                $emailSent = sendPasswordResetEmail($email, $resetLink);
 
-                $success = 'ส่งลิงก์สำหรับตั้งค่ารหัสผ่านใหม่ไปยังอีเมลของท่านเรียบร้อยแล้ว (หากอยู่บนเครื่องโลคอล สามารถเปิดดูลิงก์ได้ในไฟล์ public/uploads/email_logs.txt)';
+                if ($emailSent) {
+                    $success = 'ส่งลิงก์สำหรับตั้งค่ารหัสผ่านใหม่ไปยังอีเมลของท่านเรียบร้อยแล้ว กรุณาตรวจสอบกล่องจดหมายของท่าน (รวมถึงโฟลเดอร์สแปม)';
+                } else {
+                    $success = 'ระบบได้สร้างลิงก์สำหรับตั้งค่ารหัสผ่านใหม่แล้ว แต่ไม่สามารถส่งอีเมลได้ (SMTP ยังไม่ได้ตั้งค่า) — สามารถดูลิงก์ได้ในไฟล์ public/uploads/email_logs.txt';
+                }
             } else {
                 $error = 'ไม่พบบัญชีผู้ใช้งานที่ใช้อีเมลนี้ในระบบ (Email not found in our records)';
             }
