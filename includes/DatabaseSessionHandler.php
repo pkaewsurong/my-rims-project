@@ -6,6 +6,7 @@
 
 class DatabaseSessionHandler implements SessionHandlerInterface
 {
+    private $pdo;
     private $readData = [];
     private $readLastActivity = [];
 
