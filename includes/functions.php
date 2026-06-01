@@ -128,7 +128,7 @@ function getUnreadNotificationCount($pdo) {
 }
 
 /**
- * Get notifications for the current user (limit to 10).
+ * Generate notifications for the current user (limit to 10).
  */
 function getRecentNotifications($pdo) {
     if (!isLoggedIn()) return [];
@@ -136,5 +136,21 @@ function getRecentNotifications($pdo) {
     $stmt = $pdo->prepare('SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 10');
     $stmt->execute([$user_id]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * Generate environment-aware URL path.
+ */
+function url($path) {
+    $is_vercel = getenv('VERCEL') !== false || isset($_SERVER['VERCEL']);
+    if ($is_vercel) {
+        return $path;
+    }
+    
+    $base_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+    if ($base_path === '/' || $base_path === '\\') {
+        $base_path = '/public';
+    }
+    return $base_path . $path;
 }
 
