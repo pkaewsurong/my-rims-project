@@ -154,3 +154,85 @@ function url($path) {
     return $base_path . $path;
 }
 
+/**
+ * Send password reset email with reset link and log to public/uploads/email_logs.txt for debugging
+ */
+function sendPasswordResetEmail($email, $resetLink) {
+    $subject = "รีเซ็ตรหัสผ่านสำหรับระบบ RIMS";
+    
+    // Create an elegant, responsive HTML email body matching the earth-tone design system
+    $message = '
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8">
+        <style>
+            body { font-family: "Sarabun", "Inter", sans-serif; background-color: #FAF7F2; color: #4a3728; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #E6DCD2; border-radius: 16px; overflow: hidden; margin-top: 40px; box-shadow: 0 4px 12px rgba(139, 94, 60, 0.05); }
+            .header { background-color: #8B5E3C; padding: 30px; text-align: center; }
+            .header h1 { color: #ffffff; margin: 0; font-size: 24px; letter-spacing: 1px; }
+            .content { padding: 40px 30px; line-height: 1.6; }
+            .content h2 { color: #3d2f24; margin-top: 0; font-size: 20px; }
+            .content p { font-size: 15px; color: #574639; }
+            .btn-container { text-align: center; margin: 30px 0; }
+            .btn { display: inline-block; background-color: #8B5E3C; color: #ffffff !important; text-decoration: none; padding: 14px 30px; border-radius: 12px; font-weight: bold; font-size: 15px; transition: background-color 0.2s; box-shadow: 0 4px 12px rgba(139, 94, 60, 0.2); }
+            .btn:hover { background-color: #704829; }
+            .footer { background-color: #FAF6F0; padding: 20px; text-align: center; border-top: 1px solid #E6DCD2; font-size: 12px; color: #8a7667; }
+            .warning { font-size: 13px; color: #b45309; background-color: #fef3c7; border: 1px solid #fde68a; padding: 12px; border-radius: 8px; margin-top: 20px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>RIMS</h1>
+            </div>
+            <div class="content">
+                <h2>สวัสดีครับ/ค่ะ</h2>
+                <p>ท่านได้ส่งคำขอเพื่อรีเซ็ตรหัสผ่านสำหรับเข้าใช้งานระบบบริหารงานวิจัยและนวัตกรรม (RIMS)</p>
+                <p>กรุณาคลิกปุ่มด้านล่างนี้เพื่อตั้งรหัสผ่านใหม่:</p>
+                <div class="btn-container">
+                    <a href="' . e($resetLink) . '" class="btn" target="_blank">ตั้งรหัสผ่านใหม่ (Reset Password)</a>
+                </div>
+                <div class="warning">
+                    <strong>คำเตือน:</strong> ลิงก์สำหรับรีเซ็ตรหัสผ่านนี้จะมีอายุการใช้งาน 1 ชั่วโมงเพื่อความปลอดภัย หากท่านไม่ได้ส่งคำขอนี้ กรุณาเพิกเฉยต่ออีเมลฉบับนี้
+                </div>
+                <p style="margin-top: 30px;">ขอแสดงความนับถือ,<br>ทีมผู้ดูแลระบบ RIMS</p>
+            </div>
+            <div class="footer">
+                &copy; ' . date('Y') . ' Research & Innovation Management System. สงวนลิขสิทธิ์.
+            </div>
+        </div>
+    </body>
+    </html>
+    ';
+    
+    // Attempt actual email sending
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+    $headers .= "From: RIMS Support <noreply@rims-project.local>\r\n";
+    @mail($email, $subject, $message, $headers);
+    
+    // Log the reset email to public/uploads/email_logs.txt
+    $log_dir = dirname(__DIR__) . '/public/uploads';
+    if (!file_exists($log_dir)) {
+        @mkdir($log_dir, 0777, true);
+    }
+    $log_file = $log_dir . '/email_logs.txt';
+    
+    $log_content = "==================================================\n";
+    $log_content .= "Date: " . date('Y-m-d H:i:s') . "\n";
+    $log_content .= "To: " . $email . "\n";
+    $log_content .= "Subject: " . $subject . "\n";
+    $log_content .= "Reset Link: " . $resetLink . "\n";
+    $log_content .= "--------------------------------------------------\n";
+    $log_content .= "HTML Body (Text Version):\n";
+    $log_content .= "  สวัสดีครับ/ค่ะ ท่านได้ส่งคำขอเพื่อรีเซ็ตรหัสผ่านสำหรับเข้าใช้งานระบบ RIMS\n";
+    $log_content .= "  สามารถคลิกที่ลิงก์นี้เพื่อตั้งรหัสผ่านใหม่: " . $resetLink . "\n";
+    $log_content .= "  (ลิงก์จะมีอายุการใช้งาน 1 ชั่วโมง)\n";
+    $log_content .= "==================================================\n\n";
+    @file_put_contents($log_file, $log_content, FILE_APPEND);
+    
+    return true;
+}
+
+

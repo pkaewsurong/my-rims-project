@@ -22,11 +22,11 @@ $recentNotifications = getRecentNotifications($pdo);
                     },
                     colors: {
                         primary: {
-                            50: '#FAF6F0',
-                            100: '#F4EAE1',
-                            600: '#8B5E3C',
-                            700: '#704829',
-                            900: '#4d3019',
+                            50: '#f9fafb',
+                            100: '#b9ff66',
+                            600: '#191a23',
+                            700: '#111827',
+                            900: '#030712',
                         }
                     }
                 }
@@ -37,42 +37,47 @@ $recentNotifications = getRecentNotifications($pdo);
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap');
         
         body {
-            background-color: #FAF7F2;
-            color: #4a3728;
+            background-color: #f9fafb;
+            color: #191a23;
             transition: all 0.3s ease;
         }
         
         .card {
             background: #ffffff;
-            border: 1px solid #E6DCD2;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(139, 94, 60, 0.03), 0 2px 4px -2px rgba(139, 94, 60, 0.03);
-            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #191a23;
+            border-radius: 1.25rem;
+            box-shadow: 0px 5px 0px #191a23;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .card:hover {
-            box-shadow: 0 10px 15px -3px rgba(139, 94, 60, 0.05), 0 4px 6px -4px rgba(139, 94, 60, 0.05);
+            transform: translateY(-3px);
+            box-shadow: 0px 8px 0px #191a23;
         }
 
         .btn-primary {
-            background-color: #8B5E3C;
+            background-color: #191a23;
             color: #ffffff;
+            border: 1px solid #191a23;
             transition: all 0.2s ease;
         }
         
         .btn-primary:hover {
-            background-color: #704829;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(139, 94, 60, 0.2);
+            background-color: #b9ff66;
+            color: #191a23;
+            transform: translateY(-2px);
+            box-shadow: 0px 4px 0px #191a23;
         }
 
         .nav-link {
-            color: #6e5d4f;
+            color: #191a23;
             transition: all 0.2s ease;
+            border: 1px solid transparent;
         }
         .nav-link:hover {
-            color: #8B5E3C;
-            background-color: #F4EAE1;
+            color: #191a23;
+            background-color: #b9ff66;
+            border-color: #191a23;
         }
 
         /* Notification Dropdown */
@@ -82,7 +87,8 @@ $recentNotifications = getRecentNotifications($pdo);
             transform: translateY(10px);
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             background: #ffffff;
-            border: 1px solid #E6DCD2;
+            border: 1px solid #191a23;
+            box-shadow: 0px 6px 0px #191a23;
         }
         .notification-dropdown.active {
             opacity: 1;
@@ -102,7 +108,7 @@ $recentNotifications = getRecentNotifications($pdo);
             visibility: hidden;
             transition: all 0.2s ease;
             backdrop-filter: blur(4px);
-            background-color: rgba(77, 48, 25, 0.2);
+            background-color: rgba(25, 26, 35, 0.3);
             padding: 1rem;
         }
 
@@ -113,8 +119,8 @@ $recentNotifications = getRecentNotifications($pdo);
 
         .modal-glass {
             background: #ffffff;
-            border: 1px solid #E6DCD2;
-            box-shadow: 0 20px 25px -5px rgba(77, 48, 25, 0.1), 0 8px 10px -6px rgba(77, 48, 25, 0.1);
+            border: 1px solid #191a23;
+            box-shadow: 0px 8px 0px #191a23;
             border-radius: 1.5rem;
             max-width: 450px;
             width: 100%;
@@ -127,44 +133,46 @@ $recentNotifications = getRecentNotifications($pdo);
             transform: scale(1);
         }
 
-        /* Global overrides to map Indigo utilities to Earth Tone colors */
-        .text-indigo-500, .text-indigo-600, .text-indigo-650, .text-indigo-700, .text-indigo-850, .text-indigo-705, .text-indigo-655 {
-            color: #8B5E3C !important;
+        /* Global overrides to map Indigo utilities to Positivus style colors */
+        .text-indigo-500, .text-indigo-600, .text-indigo-655, .text-indigo-650, .text-indigo-700, .text-indigo-850, .text-indigo-705 {
+            color: #191a23 !important;
         }
         .hover\:text-indigo-650:hover, .hover\:text-indigo-600:hover, .hover\:text-indigo-700:hover {
-            color: #704829 !important;
+            color: #000000 !important;
         }
         .bg-indigo-50, .bg-indigo-50\/50, .bg-indigo-50\/60, .bg-indigo-100 {
-            background-color: #F4EAE1 !important;
+            background-color: #b9ff66 !important;
+            color: #191a23 !important;
         }
         .hover\:bg-indigo-50:hover, .hover\:bg-indigo-100:hover {
-            background-color: #EBDCD0 !important;
+            background-color: #a3e635 !important;
         }
         .border-indigo-200, .border-indigo-150, .border-indigo-100 {
-            border-color: #E6DCD2 !important;
+            border-color: #191a23 !important;
         }
         .focus\:ring-indigo-500:focus, .focus\:ring-indigo-600:focus {
-            --tw-ring-color: #8B5E3C !important;
-            border-color: #8B5E3C !important;
+            --tw-ring-color: #191a23 !important;
+            border-color: #191a23 !important;
         }
         .focus\:border-indigo-500:focus, .focus\:border-indigo-600:focus {
-            border-color: #8B5E3C !important;
+            border-color: #191a23 !important;
         }
         .file\:bg-indigo-50::file-selector-button {
-            background-color: #F4EAE1 !important;
-            color: #8B5E3C !important;
+            background-color: #b9ff66 !important;
+            color: #191a23 !important;
+            border-color: #191a23 !important;
         }
         .file\:bg-indigo-50:hover::file-selector-button {
-            background-color: #EBDCD0 !important;
+            background-color: #a3e635 !important;
         }
         .text-slate-800 {
-            color: #3d2f24 !important;
+            color: #191a23 !important;
         }
         .text-slate-700 {
-            color: #574639 !important;
+            color: #374151 !important;
         }
         .text-slate-600 {
-            color: #6e5d4f !important;
+            color: #4b5563 !important;
         }
     </style>
 </head>
@@ -174,10 +182,14 @@ $recentNotifications = getRecentNotifications($pdo);
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center space-x-3 gap-8">
                     <a href="<?= url('/') ?>" class="flex-shrink-0 flex items-center group">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-primary-600 flex items-center justify-center mr-3 shadow-md transition-all">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        <div class="flex items-center justify-center mr-3">
+                            <!-- Geometric Positivus-style Logo -->
+                            <svg class="w-8 h-8 text-[#191a23] transition-all duration-300 group-hover:rotate-90" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="2" y="2" width="28" height="28" rx="6" fill="#191a23"/>
+                                <path d="M12 20L20 12M20 20L12 12" stroke="#b9ff66" stroke-width="4" stroke-linecap="round"/>
+                            </svg>
                         </div>
-                        <h1 class="text-2xl font-bold text-slate-800 tracking-wider">RIMS</h1>
+                        <h1 class="text-2xl font-black text-[#191a23] tracking-wide font-sans">RIMS</h1>
                     </a>
                     
                     <?php if (isLoggedIn()): ?>
@@ -335,12 +347,12 @@ $recentNotifications = getRecentNotifications($pdo);
                 showCancelButton: true,
                 confirmButtonText: 'ยืนยัน',
                 cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: isDanger ? '#dc2626' : '#8B5E3C',
+                confirmButtonColor: isDanger ? '#dc2626' : '#191a23',
                 cancelButtonColor: '#d1d5db',
-                background: '#FAF7F2',
-                color: '#4a3728',
+                background: '#ffffff',
+                color: '#191a23',
                 customClass: {
-                    confirmButton: 'rounded-xl px-6 py-2.5 text-sm font-bold',
+                    confirmButton: 'rounded-xl px-6 py-2.5 text-sm font-bold border border-[#191a23]',
                     cancelButton: 'rounded-xl px-6 py-2.5 text-sm font-bold text-slate-700',
                     popup: 'rounded-2xl border border-slate-200 shadow-xl'
                 }
@@ -355,11 +367,11 @@ $recentNotifications = getRecentNotifications($pdo);
                 html: message,
                 icon: 'info',
                 confirmButtonText: 'ตกลง',
-                confirmButtonColor: '#8B5E3C',
-                background: '#FAF7F2',
-                color: '#4a3728',
+                confirmButtonColor: '#191a23',
+                background: '#ffffff',
+                color: '#191a23',
                 customClass: {
-                    confirmButton: 'rounded-xl px-6 py-2.5 text-sm font-bold',
+                    confirmButton: 'rounded-xl px-6 py-2.5 text-sm font-bold border border-[#191a23]',
                     popup: 'rounded-2xl border border-slate-200 shadow-xl'
                 }
             }).then((result) => {
@@ -383,10 +395,10 @@ $recentNotifications = getRecentNotifications($pdo);
                 showCancelButton: true,
                 confirmButtonText: 'ตกลง',
                 cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#8B5E3C',
+                confirmButtonColor: '#191a23',
                 cancelButtonColor: '#d1d5db',
-                background: '#FAF7F2',
-                color: '#4a3728'
+                background: '#ffffff',
+                color: '#191a23'
             }).then((result) => {
                 return result.isConfirmed;
             });

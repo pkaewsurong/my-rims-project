@@ -175,6 +175,12 @@ if ($route === '' || $route === '/') {
 } elseif ($route === '/logout') {
     require __DIR__ . '/../src/controllers/AuthController.php';
     logoutAction();
+} elseif ($route === '/forgot-password') {
+    require __DIR__ . '/../src/controllers/AuthController.php';
+    forgotPasswordAction($pdo);
+} elseif ($route === '/reset-password') {
+    require __DIR__ . '/../src/controllers/AuthController.php';
+    resetPasswordAction($pdo);
 } elseif ($route === '/projects') {
     require __DIR__ . '/../src/controllers/ProjectController.php';
     indexAction($pdo);
