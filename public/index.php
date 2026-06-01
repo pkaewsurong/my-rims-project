@@ -1,8 +1,6 @@
 <?php
 // public/index.php
 
-session_start();
-
 // Simple Router
 $request_uri = $_SERVER['REQUEST_URI'];
 $parsed_url = parse_url($request_uri);
@@ -33,6 +31,26 @@ if ($route === '/test-db') {
 // Include core configurations
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
+
+// Use database sessions on Vercel (serverless has no persistent filesystem)
+$is_vercel = getenv('VERCEL') !== false || isset($_SERVER['VERCEL']);
+if ($is_vercel && isset($pdo)) {
+    // Auto-create sessions table if it doesn't exist
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS sessions (
+            id VARCHAR(128) NOT NULL PRIMARY KEY,
+            data TEXT NOT NULL,
+            last_activity INT(11) NOT NULL,
+            INDEX idx_last_activity (last_activity)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+
+    require_once __DIR__ . '/../includes/DatabaseSessionHandler.php';
+    $handler = new DatabaseSessionHandler($pdo);
+    session_set_save_handler($handler, true);
+}
+
+session_start();
 
 // Route handling
 if ($route === '' || $route === '/') {
