@@ -79,6 +79,14 @@ if ($route === '' || $route === '/') {
         "Case 5: SSL CA & Verify True" => [1007 => $ca_file, 1014 => true],
         "Case 6: System CA (/etc/ssl/certs/ca-certificates.crt)" => [1007 => '/etc/ssl/certs/ca-certificates.crt'],
         "Case 7: System CA & Verify False" => [1007 => '/etc/ssl/certs/ca-certificates.crt', 1014 => false],
+        "Case 10: SSL CA => true" => [1007 => true],
+        "Case 11: SSL CA => true & Verify False" => [1007 => true, 1014 => false],
+        "Case 12: SSL CA => true & Verify True" => [1007 => true, 1014 => true],
+        "Case 13: Amazon Linux CA (/etc/pki/tls/cert.pem)" => [1007 => '/etc/pki/tls/cert.pem'],
+        "Case 14: Amazon Linux CA & Verify False" => [1007 => '/etc/pki/tls/cert.pem', 1014 => false],
+        "Case 15: Amazon Linux CA & Verify True" => [1007 => '/etc/pki/tls/cert.pem', 1014 => true],
+        "Case 16: SSL CA => '' & Verify False" => [1007 => '', 1014 => false],
+        "Case 17: SSL CA => '/dev/null' & Verify False" => [1007 => '/dev/null', 1014 => false],
     ];
 
     foreach ($tests as $name => $opts) {
