@@ -3,10 +3,6 @@
 
 session_start();
 
-// Include core configurations
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../includes/functions.php';
-
 // Simple Router
 $request_uri = $_SERVER['REQUEST_URI'];
 $parsed_url = parse_url($request_uri);
@@ -29,6 +25,14 @@ if (strpos($route, '/public') === 0) {
 if ($route === '') {
     $route = '/';
 }
+
+if ($route === '/test-db') {
+    $skip_db_connect = true;
+}
+
+// Include core configurations
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 // Route handling
 if ($route === '' || $route === '/') {

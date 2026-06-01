@@ -29,8 +29,10 @@ if (!$is_local) {
     $options[1014] = false; // Disable verification for serverless environment compatibility
 }
 
-try {
-    $pdo = new PDO($dsn, $username, $password, $options);
-} catch (\PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+if (!isset($skip_db_connect) || !$skip_db_connect) {
+    try {
+        $pdo = new PDO($dsn, $username, $password, $options);
+    } catch (\PDOException $e) {
+        die("Database connection failed: " . $e->getMessage());
+    }
 }
