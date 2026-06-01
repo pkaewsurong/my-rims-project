@@ -58,25 +58,25 @@ function storeAction($pdo) {
         // Handle File Uploads
         $upload_dir = __DIR__ . '/../../public/uploads/ip/';
         if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
+            @mkdir($upload_dir, 0777, true);
         }
 
         $file_submission = null;
         if (!empty($_FILES['file_submission']['name'])) {
             $file_submission = time() . '_sub_' . basename($_FILES['file_submission']['name']);
-            move_uploaded_file($_FILES['file_submission']['tmp_name'], $upload_dir . $file_submission);
+            @move_uploaded_file($_FILES['file_submission']['tmp_name'], $upload_dir . $file_submission);
         }
 
         $file_certificate = null;
         if (!empty($_FILES['file_certificate']['name'])) {
             $file_certificate = time() . '_cert_' . basename($_FILES['file_certificate']['name']);
-            move_uploaded_file($_FILES['file_certificate']['tmp_name'], $upload_dir . $file_certificate);
+            @move_uploaded_file($_FILES['file_certificate']['tmp_name'], $upload_dir . $file_certificate);
         }
 
         $file_evidence = null;
         if (!empty($_FILES['file_evidence']['name'])) {
             $file_evidence = time() . '_evid_' . basename($_FILES['file_evidence']['name']);
-            move_uploaded_file($_FILES['file_evidence']['tmp_name'], $upload_dir . $file_evidence);
+            @move_uploaded_file($_FILES['file_evidence']['tmp_name'], $upload_dir . $file_evidence);
         }
 
         $pdo->beginTransaction();

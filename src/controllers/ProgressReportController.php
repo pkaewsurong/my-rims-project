@@ -79,14 +79,14 @@ function progressStoreAction($pdo) {
         if (isset($_FILES['attachment']) && !empty($_FILES['attachment']['name'][0])) {
             $upload_dir = __DIR__ . '/../../public/uploads/progress/';
             if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0777, true);
+                @mkdir($upload_dir, 0777, true);
             }
             
             foreach ($_FILES['attachment']['tmp_name'] as $key => $tmp_name) {
                 if ($_FILES['attachment']['error'][$key] === UPLOAD_ERR_OK) {
                     $original_filename = basename($_FILES['attachment']['name'][$key]);
                     $filename = uniqid() . '_' . $original_filename;
-                    if (move_uploaded_file($tmp_name, $upload_dir . $filename)) {
+                    if (@move_uploaded_file($tmp_name, $upload_dir . $filename)) {
                         $attachment_paths[] = [
                             'path' => 'uploads/progress/' . $filename,
                             'name' => $original_filename

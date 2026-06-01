@@ -61,19 +61,19 @@ function storeAction($pdo) {
         // Handle File Uploads
         $upload_dir = __DIR__ . '/../../public/uploads/publications/';
         if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
+            @mkdir($upload_dir, 0777, true);
         }
 
         $file_full_text = null;
         if (!empty($_FILES['file_full_text']['name'])) {
             $file_full_text = time() . '_full_' . basename($_FILES['file_full_text']['name']);
-            move_uploaded_file($_FILES['file_full_text']['tmp_name'], $upload_dir . $file_full_text);
+            @move_uploaded_file($_FILES['file_full_text']['tmp_name'], $upload_dir . $file_full_text);
         }
 
         $file_acceptance = null;
         if (!empty($_FILES['file_acceptance']['name'])) {
             $file_acceptance = time() . '_acc_' . basename($_FILES['file_acceptance']['name']);
-            move_uploaded_file($_FILES['file_acceptance']['tmp_name'], $upload_dir . $file_acceptance);
+            @move_uploaded_file($_FILES['file_acceptance']['tmp_name'], $upload_dir . $file_acceptance);
         }
 
         $pdo->beginTransaction();

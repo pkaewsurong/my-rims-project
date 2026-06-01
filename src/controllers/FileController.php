@@ -16,7 +16,7 @@ function fileStoreAction($pdo) {
 
         $upload_dir = __DIR__ . '/../../public/uploads/';
         if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0755, true);
+            @mkdir($upload_dir, 0755, true);
         }
 
         // Generate unique filename
@@ -24,7 +24,7 @@ function fileStoreAction($pdo) {
         $new_filename = uniqid() . '.' . $file_info['extension'];
         $destination = $upload_dir . $new_filename;
 
-        if (move_uploaded_file($_FILES['file_path']['tmp_name'], $destination)) {
+        if (@move_uploaded_file($_FILES['file_path']['tmp_name'], $destination)) {
             // Save relative path to DB
             $db_path = 'uploads/' . $new_filename;
 

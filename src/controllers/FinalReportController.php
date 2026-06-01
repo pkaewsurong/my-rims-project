@@ -75,13 +75,13 @@ function storeAction($pdo) {
         // Handle File Uploads
         $upload_dir = __DIR__ . '/../../public/uploads/reports/';
         if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
+            @mkdir($upload_dir, 0777, true);
         }
 
         $file_report_pdf = null;
         if (!empty($_FILES['file_report_pdf']['name'])) {
             $file_report_pdf = time() . '_final_' . basename($_FILES['file_report_pdf']['name']);
-            move_uploaded_file($_FILES['file_report_pdf']['tmp_name'], $upload_dir . $file_report_pdf);
+            @move_uploaded_file($_FILES['file_report_pdf']['tmp_name'], $upload_dir . $file_report_pdf);
         }
 
         // Insert or Update the final report

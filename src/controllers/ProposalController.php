@@ -161,7 +161,7 @@ function proposalUpdateAction($pdo) {
         // Handle File Uploads (keep old files if no new upload)
         $upload_dir = __DIR__ . '/../../public/uploads/proposals/';
         if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
+            @mkdir($upload_dir, 0777, true);
         }
 
         $file_fields = ['file_proposal', 'file_budget', 'file_cv', 'file_ethics'];
@@ -171,7 +171,7 @@ function proposalUpdateAction($pdo) {
         foreach ($file_fields as $field) {
             if (!empty($_FILES[$field]['name'])) {
                 $filename = time() . '_' . substr($field, 5) . '_' . basename($_FILES[$field]['name']);
-                move_uploaded_file($_FILES[$field]['tmp_name'], $upload_dir . $filename);
+                @move_uploaded_file($_FILES[$field]['tmp_name'], $upload_dir . $filename);
                 $file_updates[] = "$field = ?";
                 $file_values[] = $filename;
             }
@@ -295,7 +295,7 @@ function proposalStoreAction($pdo) {
         // Handle File Uploads
         $upload_dir = __DIR__ . '/../../public/uploads/proposals/';
         if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
+            @mkdir($upload_dir, 0777, true);
         }
 
         $file_proposal = null;
@@ -304,20 +304,20 @@ function proposalStoreAction($pdo) {
 
         if (!empty($_FILES['file_proposal']['name'])) {
             $file_proposal = time() . '_prop_' . basename($_FILES['file_proposal']['name']);
-            move_uploaded_file($_FILES['file_proposal']['tmp_name'], $upload_dir . $file_proposal);
+            @move_uploaded_file($_FILES['file_proposal']['tmp_name'], $upload_dir . $file_proposal);
         }
         if (!empty($_FILES['file_budget']['name'])) {
             $file_budget = time() . '_budg_' . basename($_FILES['file_budget']['name']);
-            move_uploaded_file($_FILES['file_budget']['tmp_name'], $upload_dir . $file_budget);
+            @move_uploaded_file($_FILES['file_budget']['tmp_name'], $upload_dir . $file_budget);
         }
         if (!empty($_FILES['file_cv']['name'])) {
             $file_cv = time() . '_cv_' . basename($_FILES['file_cv']['name']);
-            move_uploaded_file($_FILES['file_cv']['tmp_name'], $upload_dir . $file_cv);
+            @move_uploaded_file($_FILES['file_cv']['tmp_name'], $upload_dir . $file_cv);
         }
         $file_ethics = null;
         if (!empty($_FILES['file_ethics']['name'])) {
             $file_ethics = time() . '_ethics_' . basename($_FILES['file_ethics']['name']);
-            move_uploaded_file($_FILES['file_ethics']['tmp_name'], $upload_dir . $file_ethics);
+            @move_uploaded_file($_FILES['file_ethics']['tmp_name'], $upload_dir . $file_ethics);
         }
 
         $stmt = $pdo->prepare('

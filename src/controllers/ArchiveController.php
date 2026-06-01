@@ -56,7 +56,7 @@ function storeAction($pdo) {
         // Handle File Upload
         $upload_dir = __DIR__ . '/../../public/uploads/archives/';
         if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
+            @mkdir($upload_dir, 0777, true);
         }
 
         $file_path = null;
@@ -64,7 +64,7 @@ function storeAction($pdo) {
         if (!empty($_FILES['file_path']['name'])) {
             $file_path = time() . '_archive_' . basename($_FILES['file_path']['name']);
             $file_size = $_FILES['file_path']['size'];
-            move_uploaded_file($_FILES['file_path']['tmp_name'], $upload_dir . $file_path);
+            @move_uploaded_file($_FILES['file_path']['tmp_name'], $upload_dir . $file_path);
         }
 
         $stmt = $pdo->prepare('
