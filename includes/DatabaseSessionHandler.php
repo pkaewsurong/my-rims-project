@@ -25,19 +25,19 @@ class DatabaseSessionHandler implements SessionHandlerInterface
 
     public function read($id): string|false
     {
-        $stmt = $this->pdo->prepare('SELECT data FROM sessions WHERE id = ? LIMIT 1');
+        $stmt = $this->pdo->prepare('SELECT payload FROM sessions WHERE id = ? LIMIT 1');
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row ? $row['data'] : '';
+        return $row ? base64_decode($row['payload']) : '';
     }
 
     public function write($id, $data): bool
     {
         // Use REPLACE INTO for MySQL/TiDB (INSERT or UPDATE)
         $stmt = $this->pdo->prepare(
-            'REPLACE INTO sessions (id, data, last_activity) VALUES (?, ?, ?)'
+            'REPLACE INTO sessions (id, payload, last_activity) VALUES (?, ?, ?)'
         );
-        return $stmt->execute([$id, $data, time()]);
+        return $stmt->execute([$id, base64_encode($data), time()]);
     }
 
     public function destroy($id): bool
