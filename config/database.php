@@ -22,7 +22,7 @@ if (!$is_local) {
     // We use integer values (1007 for MYSQL_ATTR_SSL_CA, 1014 for MYSQL_ATTR_SSL_VERIFY_SERVER_CERT)
     // to prevent deprecation warnings in PHP 8.5+.
     $options[1007] = __DIR__ . '/cacert.pem';
-    $options[1014] = true;
+    $options[1014] = false; // Disable verification for serverless environment compatibility
 }
 
 try {
