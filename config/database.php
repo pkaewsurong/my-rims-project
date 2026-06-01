@@ -15,11 +15,15 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
 
-// Enable SSL/TLS verification for remote database hosts (like TiDB Cloud)
+// Enable SSL/TLS for remote database hosts (like TiDB Cloud)
 $is_local = in_array(strtolower($host), ['127.0.0.1', 'localhost', '::1']);
 if (!$is_local) {
-    $options[PDO::MYSQL_ATTR_SSL_CA] = null;
-    $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+    // Disable server certificate verification because serverless environments (like AWS Lambda on Vercel)
+    // do not have default CA certificates configured. The connection remains encrypted.
+    // We use integer values (1007 for MYSQL_ATTR_SSL_CA, 1014 for MYSQL_ATTR_SSL_VERIFY_SERVER_CERT)
+    // to prevent deprecation warnings in PHP 8.5+.
+    $options[1007] = null;
+    $options[1014] = false;
 }
 
 try {
