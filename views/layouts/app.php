@@ -1,8 +1,9 @@
 <?php 
 ob_start(); 
 global $pdo;
-$unreadCount = getUnreadNotificationCount($pdo);
+// Fetch notifications once, then compute unread count from the same result (saves 1 DB query per page)
 $recentNotifications = getRecentNotifications($pdo);
+$unreadCount = getUnreadNotificationCount($pdo, $recentNotifications);
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -10,9 +11,19 @@ $recentNotifications = getRecentNotifications($pdo);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RIMS - ระบบบริหารงานวิจัยและนวัตกรรม</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Preconnect to external domains for faster resource loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <!-- Google Fonts via <link> (faster than @import in CSS) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap">
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SweetAlert2 (defer = non-blocking) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     <script>
         tailwind.config = {
             theme: {
@@ -34,12 +45,9 @@ $recentNotifications = getRecentNotifications($pdo);
         }
     </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap');
-        
         body {
             background-color: #f9fafb;
             color: #191a23;
-            transition: all 0.3s ease;
         }
         
         .card {

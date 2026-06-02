@@ -118,9 +118,14 @@ function addNotification($pdo, $user_id, $title, $message) {
 
 /**
  * Get unread notification count for the current user.
+ * NOTE: Use getRecentNotifications() first and pass the result here to avoid double querying.
  */
-function getUnreadNotificationCount($pdo) {
+function getUnreadNotificationCount($pdo, array $notifications = null) {
     if (!isLoggedIn()) return 0;
+    // If notifications already fetched, derive count from them (avoids extra DB query)
+    if ($notifications !== null) {
+        return count(array_filter($notifications, fn($n) => !$n['is_read']));
+    }
     $user_id = authUser()['id'];
     $stmt = $pdo->prepare('SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0');
     $stmt->execute([$user_id]);
