@@ -120,7 +120,7 @@ function addNotification($pdo, $user_id, $title, $message) {
  * Get unread notification count for the current user.
  * NOTE: Use getRecentNotifications() first and pass the result here to avoid double querying.
  */
-function getUnreadNotificationCount($pdo, array $notifications = null) {
+function getUnreadNotificationCount($pdo, ?array $notifications = null) {
     if (!isLoggedIn()) return 0;
     // If notifications already fetched, derive count from them (avoids extra DB query)
     if ($notifications !== null) {
