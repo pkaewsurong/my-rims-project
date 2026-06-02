@@ -17,3 +17,15 @@ public/uploads/email_logs.txt
 # OS
 Thumbs.db
 .DS_Store
+
+# Local-only utility scripts (not part of the web app)
+generate_usecase_doc.php
+
+# Generated Word documents (output from local scripts)
+*.docx
+*.xlsx
+*.pptx
+
+# Vendor packages for local-only tools (not needed by Vercel)
+vendor/laminas/
+vendor/phpoffice/
