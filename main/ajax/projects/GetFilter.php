@@ -1,12 +1,14 @@
 <?php
 // main/ajax/projects/GetFilter.php
-session_start();
-require_once('../../../config/database.php');
-require_once('../../../includes/functions.php');
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once dirname(__DIR__, 3) . '/config/database.php';
+require_once dirname(__DIR__, 3) . '/includes/functions.php';
 
 if (!isLoggedIn()) { http_response_code(401); exit; }
 
-$mode = trim($_POST['mode'] ?? 'my');
+$mode = $mode ?? trim($_POST['mode'] ?? 'my');
 
 // Fetch available statuses for dropdown - only project statuses are needed now
 $statuses = [

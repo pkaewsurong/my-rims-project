@@ -1,23 +1,35 @@
 // main/js/proposals.js
 
 $(document).ready(function () {
-    GetFilter();
+    // Init Select2 for existing filter selects
+    $('#filter .select2-filter').select2({
+        width: '100%',
+        theme: 'bootstrap-5',
+    });
+
+    // Enter key triggers search
+    $(document).on('keypress', '#propKeyword', function (e) {
+        if (e.which === 13) GetTable();
+    });
+
+    // Initialize DataTable on the pre-rendered table
+    initDataTable();
 });
 
-function GetFilter() {
-    $.ajax({
-        type: 'POST',
-        url: 'ajax/proposals/GetFilter.php',
-        dataType: 'html',
-        success: function (response) {
-            $('#filter').html(response);
-            $('#filter .select2-filter').select2({ width: '100%', theme: 'bootstrap-5' });
-            $(document).on('keypress', '#propKeyword', function (e) {
-                if (e.which === 13) GetTable();
-            });
-            GetTable();
-        }
-    });
+function initDataTable() {
+    if ($.fn.DataTable.isDataTable('#proposalsTable')) {
+        $('#proposalsTable').DataTable().destroy();
+    }
+    if ($('#proposalsTable').length && $('#proposalsTable tbody td[colspan]').length === 0) {
+        $('#proposalsTable').DataTable({
+            ordering: false,
+            pageLength: 25,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/th.json'
+            },
+            responsive: true,
+        });
+    }
 }
 
 function GetTable() {
@@ -34,18 +46,8 @@ function GetTable() {
         },
         dataType: 'html',
         success: function (response) {
-            if ($.fn.DataTable.isDataTable('#proposalsTable')) {
-                $('#proposalsTable').DataTable().destroy();
-            }
             $('#showTable').html(response);
-            if ($('#proposalsTable').length && $('#proposalsTable tbody td[colspan]').length === 0) {
-                $('#proposalsTable').DataTable({
-                    ordering: false,
-                    pageLength: 25,
-                    language: { url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/th.json' },
-                    responsive: true,
-                });
-            }
+            initDataTable();
 
             $('#loadingDiv').hide();
             $('#dataDiv').show();

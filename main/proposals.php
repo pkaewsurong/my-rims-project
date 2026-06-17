@@ -27,9 +27,9 @@ require 'header.php';
 <div class="card mb-4" style="border-left: 4px solid #b9ff66;">
     <div class="card-body py-3">
         <div id="filter">
-            <div class="text-center py-3 text-muted">
-                <div class="spinner-border spinner-border-sm me-2"></div> กำลังโหลด...
-            </div>
+            <?php
+            include 'ajax/proposals/GetFilter.php';
+            ?>
         </div>
     </div>
 </div>
@@ -45,9 +45,16 @@ require 'header.php';
 </div>
 
 <!-- Data Table -->
-<div class="card" id="dataDiv" style="display:none;">
+<div class="card" id="dataDiv">
     <div class="card-body p-0">
-        <div id="showTable"></div>
+        <div id="showTable">
+            <?php
+            $keyword = '';
+            $status = '';
+            $fundingId = '';
+            include 'ajax/proposals/GetTable.php';
+            ?>
+        </div>
     </div>
 </div>
 

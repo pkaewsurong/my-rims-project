@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 0;
+            padding: 24px 16px;
         }
 
         .register-card {

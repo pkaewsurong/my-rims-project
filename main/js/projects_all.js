@@ -1,28 +1,51 @@
 // main/js/projects_all.js - All Projects Page (Admin view, same pattern)
-$(document).ready(function () { GetFilter(); });
-
-function GetFilter() {
-    $.ajax({ type:'POST', url:'ajax/projects/GetFilter.php', data: { mode: 'all' }, dataType:'html',
-        success: function(r) {
-            $('#filter').html(r);
-            $('#filter .select2-filter').select2({ width:'100%', theme:'bootstrap-5' });
-            $(document).on('keypress', '#keyword', function(e) { if (e.which===13) GetTable(); });
-            GetTable();
-        }
+$(document).ready(function () {
+    // Init Select2 for existing filter selects
+    $('#filter .select2-filter').select2({
+        width: '100%',
+        theme: 'bootstrap-5',
     });
+
+    // Enter key triggers search
+    $(document).on('keypress', '#keyword', function (e) {
+        if (e.which === 13) GetTable();
+    });
+
+    // Initialize DataTable on the pre-rendered table
+    initDataTable();
+});
+
+function initDataTable() {
+    if ($.fn.DataTable.isDataTable('#projectsTable')) {
+        $('#projectsTable').DataTable().destroy();
+    }
+    if ($('#projectsTable').length && $('#projectsTable tbody td[colspan]').length === 0) {
+        $('#projectsTable').DataTable({
+            ordering: false,
+            pageLength: 25,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/th.json'
+            },
+            responsive: true,
+        });
+    }
 }
 
 function GetTable() {
     $('#loadingDiv').show(); $('#dataDiv').hide();
-    $.ajax({ type:'POST', url:'ajax/projects/GetTable.php',
-        data: { mode: 'all', keyword: $('#keyword').val()||'', status: $('#filterStatus').val()||'', type: $('#filterType').val()||'' },
-        dataType:'html',
-        success: function(r) {
-            if ($.fn.DataTable.isDataTable('#projectsTable')) $('#projectsTable').DataTable().destroy();
+    $.ajax({
+        type: 'POST',
+        url: 'ajax/projects/GetTable.php',
+        data: {
+            mode:    'all',
+            keyword: $('#keyword').val() || '',
+            status:  $('#filterStatus').val() || '',
+            type:    $('#filterType').val() || ''
+        },
+        dataType: 'html',
+        success: function (r) {
             $('#showTable').html(r);
-            if ($('#projectsTable').length && $('#projectsTable tbody td[colspan]').length === 0) {
-                $('#projectsTable').DataTable({ ordering:false, pageLength:25, language:{ url:'https://cdn.datatables.net/plug-ins/2.0.8/i18n/th.json' } });
-            }
+            initDataTable();
             $('#loadingDiv').hide(); $('#dataDiv').show();
         }
     });

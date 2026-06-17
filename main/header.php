@@ -336,6 +336,26 @@ $primaryRole = !empty($userRoles) ? $userRoles[0] : 'User';
             .sidebar { transform: translateX(-100%); }
             .sidebar.show { transform: translateX(0); }
             .topbar, .main-wrapper { left: 0; margin-left: 0; }
+            .topbar { padding: 0 16px; }
+            .page-content { padding: 16px; }
+            .page-title { font-size: 20px; }
+            .card-body { padding: 16px; }
+            
+            /* Make DataTable pagination and search look nice on mobile */
+            .dt-container .row:first-child, .dt-container .row:last-child {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+                justify-content: center;
+            }
+            .dt-search, .dt-paging, .dt-length, .dt-info {
+                display: flex !important;
+                justify-content: center !important;
+                text-align: center !important;
+                width: 100% !important;
+                margin: 4px 0 !important;
+            }
         }
     </style>
 </head>

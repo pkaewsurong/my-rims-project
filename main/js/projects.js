@@ -1,36 +1,35 @@
 // main/js/projects.js
 
 $(document).ready(function () {
-    GetFilter();
+    // Init Select2 for existing filter selects
+    $('#filter .select2-filter').select2({
+        width: '100%',
+        theme: 'bootstrap-5',
+    });
+
+    // Enter key triggers search
+    $(document).on('keypress', '#keyword', function (e) {
+        if (e.which === 13) GetTable();
+    });
+
+    // Initialize DataTable on the pre-rendered table
+    initDataTable();
 });
 
-function GetFilter() {
-    $.ajax({
-        type: 'POST',
-        url: 'ajax/projects/GetFilter.php',
-        data: { mode: 'my' },
-        dataType: 'html',
-        success: function (response) {
-            $('#filter').html(response);
-
-            // Init Select2 for filter selects
-            $('#filter .select2-filter').select2({
-                width: '100%',
-                theme: 'bootstrap-5',
-            });
-
-            // Enter key triggers search
-            $(document).on('keypress', '#keyword', function (e) {
-                if (e.which === 13) GetTable();
-            });
-
-            // Load table after filter
-            GetTable();
-        },
-        error: function () {
-            $('#filter').html('<div class="alert alert-danger">เกิดข้อผิดพลาดในการโหลด filter</div>');
-        }
-    });
+function initDataTable() {
+    if ($.fn.DataTable.isDataTable('#projectsTable')) {
+        $('#projectsTable').DataTable().destroy();
+    }
+    if ($('#projectsTable').length && $('#projectsTable tbody td[colspan]').length === 0) {
+        $('#projectsTable').DataTable({
+            ordering: false,
+            pageLength: 25,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/th.json'
+            },
+            responsive: true,
+        });
+    }
 }
 
 function GetTable() {
@@ -48,23 +47,8 @@ function GetTable() {
         },
         dataType: 'html',
         success: function (response) {
-            // Destroy DataTable first if it already exists
-            if ($.fn.DataTable.isDataTable('#projectsTable')) {
-                $('#projectsTable').DataTable().destroy();
-            }
-
             $('#showTable').html(response);
-
-            if ($('#projectsTable').length && $('#projectsTable tbody td[colspan]').length === 0) {
-                $('#projectsTable').DataTable({
-                    ordering: false,
-                    pageLength: 25,
-                    language: {
-                        url: 'https://cdn.datatables.net/plug-ins/2.0.8/i18n/th.json'
-                    },
-                    responsive: true,
-                });
-            }
+            initDataTable();
 
             $('#loadingDiv').hide();
             $('#dataDiv').show();

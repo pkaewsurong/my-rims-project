@@ -1,16 +1,18 @@
 <?php
 // main/ajax/projects/GetTable.php
-session_start();
-require_once('../../../config/database.php');
-require_once('../../../includes/functions.php');
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once dirname(__DIR__, 3) . '/config/database.php';
+require_once dirname(__DIR__, 3) . '/includes/functions.php';
 
 if (!isLoggedIn()) { http_response_code(401); exit; }
 
 $user_id   = authUser()['id'];
 $isAdmin   = hasRole('admin');
-$keyword   = trim($_POST['keyword'] ?? '');
-$status    = trim($_POST['status'] ?? '');
-$mode      = trim($_POST['mode'] ?? 'my');
+$keyword   = $keyword ?? trim($_POST['keyword'] ?? '');
+$status    = $status ?? trim($_POST['status'] ?? '');
+$mode      = $mode ?? trim($_POST['mode'] ?? 'my');
 
 // Build WHERE clauses
 $params = [];

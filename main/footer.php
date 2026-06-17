@@ -23,9 +23,32 @@
 <?php endif; ?>
 
 <script>
-    // Sidebar toggle (mobile)
+    // Sidebar toggle (mobile) with backdrop overlay
     function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('show');
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('show');
+        
+        let backdrop = document.getElementById('sidebar-backdrop');
+        if (sidebar.classList.contains('show')) {
+            if (!backdrop) {
+                backdrop = document.createElement('div');
+                backdrop.id = 'sidebar-backdrop';
+                backdrop.style.position = 'fixed';
+                backdrop.style.top = '0';
+                backdrop.style.left = '0';
+                backdrop.style.width = '100vw';
+                backdrop.style.height = '100vh';
+                backdrop.style.background = 'rgba(0,0,0,0.5)';
+                backdrop.style.zIndex = '950';
+                backdrop.style.transition = 'opacity 0.2s ease';
+                backdrop.addEventListener('click', toggleSidebar);
+                document.body.appendChild(backdrop);
+            }
+        } else {
+            if (backdrop) {
+                backdrop.remove();
+            }
+        }
     }
 
     // Notification dropdown toggle

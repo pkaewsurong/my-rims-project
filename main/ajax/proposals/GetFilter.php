@@ -1,8 +1,11 @@
 <?php
 // main/ajax/proposals/GetFilter.php
-session_start();
-require_once('../../../config/database.php');
-require_once('../../../includes/functions.php');
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+require_once dirname(__DIR__, 3) . '/config/database.php';
+require_once dirname(__DIR__, 3) . '/includes/functions.php';
+
 if (!isLoggedIn()) { http_response_code(401); exit; }
 
 // Fetch funding sources for dropdown

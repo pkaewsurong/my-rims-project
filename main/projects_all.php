@@ -20,7 +20,10 @@ require 'header.php';
 <div class="card mb-4" style="border-left:4px solid #b9ff66;">
     <div class="card-body py-3">
         <div id="filter">
-            <div class="text-center py-3 text-muted"><div class="spinner-border spinner-border-sm me-2"></div> กำลังโหลด...</div>
+            <?php
+            $mode = 'all';
+            include 'ajax/projects/GetFilter.php';
+            ?>
         </div>
     </div>
 </div>
@@ -34,8 +37,17 @@ require 'header.php';
     </div>
 </div>
 
-<div class="card" id="dataDiv" style="display:none;">
-    <div class="card-body p-0"><div id="showTable"></div></div>
+<div class="card" id="dataDiv">
+    <div class="card-body p-0">
+        <div id="showTable">
+            <?php
+            $mode = 'all';
+            $keyword = '';
+            $status = '';
+            include 'ajax/projects/GetTable.php';
+            ?>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="mainModal" data-bs-backdrop="static" tabindex="-1">
