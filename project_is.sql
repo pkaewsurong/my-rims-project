@@ -8,6 +8,7 @@
 -- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET FOREIGN_KEY_CHECKS = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -653,7 +654,8 @@ CREATE TABLE `proposals` (
   `abstract` text DEFAULT NULL,
   `budget_total` decimal(15,2) NOT NULL DEFAULT 0.00,
   `budget_details` text DEFAULT NULL,
-  `status` enum('draft','submitted','under_review','approved','rejected') NOT NULL DEFAULT 'draft',
+  `status` enum('draft','submitted','under_review','approved','rejected','needs_revision') NOT NULL DEFAULT 'draft',
+  `revision_comment` text DEFAULT NULL,
   `funding_source_id` bigint(20) UNSIGNED DEFAULT NULL,
   `funding_source_internal` varchar(255) DEFAULT NULL,
   `funding_source_external` varchar(255) DEFAULT NULL,
@@ -1667,6 +1669,7 @@ ALTER TABLE `user_kpi_scores`
   ADD CONSTRAINT `user_kpi_scores_metric_id_foreign` FOREIGN KEY (`metric_id`) REFERENCES `kpi_metrics` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `user_kpi_scores_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
+SET FOREIGN_KEY_CHECKS = 1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

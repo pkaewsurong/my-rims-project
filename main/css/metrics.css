@@ -1,0 +1,4 @@
+/* main/css/metrics.css */
+#metricsTable thead th { background:#191a23!important; color:#fff!important; }
+#metricsTable tbody tr:hover { background:#fafff0; }
+.metric-value { font-size:28px; font-weight:800; }

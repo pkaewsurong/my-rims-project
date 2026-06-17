@@ -4,7 +4,7 @@
       "runtime": "vercel-php@0.8.0",
       "memory": 512,
       "maxDuration": 30,
-      "includeFiles": "{config/**,includes/**,src/**,views/**,vendor/**,public/**}"
+      "includeFiles": "{config/**,includes/**,main/**,vendor/**,public/**}"
     }
   },
   "headers": [
@@ -39,6 +39,10 @@
     {
       "src": "/public/(.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|pdf|txt|zip|doc|docx|xls|xlsx|ppt|pptx))$",
       "dest": "/public/$1"
+    },
+    {
+      "src": "/main/(.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|pdf|txt|zip|doc|docx|xls|xlsx|ppt|pptx))$",
+      "dest": "/main/$1"
     },
     {
       "src": "/(.*)",

@@ -1,0 +1,65 @@
+/* main/css/dashboard.css */
+
+/* Stats cards */
+.stat-card {
+    border-radius: 14px;
+    border: 1px solid #e8ecf0;
+    background: #fff;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.stat-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.stat-icon.green  { background: #dcfce7; color: #16a34a; }
+.stat-icon.blue   { background: #dbeafe; color: #2563eb; }
+.stat-icon.yellow { background: #fef9c3; color: #ca8a04; }
+.stat-icon.purple { background: #ede9fe; color: #7c3aed; }
+.stat-icon.red    { background: #fee2e2; color: #dc2626; }
+.stat-icon.lime   { background: #ecfccb; color: #4d7c0f; }
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: #191a23;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: #888;
+    font-weight: 500;
+}
+
+/* Counter animation */
+.stat-value {
+    transition: all 0.3s ease;
+}
+
+/* Table styles */
+#dashboardTable th {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    background: #f8f9fa;
+}
+
+#dashboardTable td { font-size: 14px; }
+
+#dashboardTable tbody tr:hover { background: #fafff0; }

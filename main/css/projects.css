@@ -1,0 +1,102 @@
+/* main/css/projects.css */
+
+/* Page header section */
+.projects-page-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Filter card */
+#filterCard {
+    border-left: 4px solid #b9ff66;
+    transition: box-shadow 0.2s;
+}
+
+#filterCard:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+/* Loading state */
+#loadingDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #888;
+    gap: 12px;
+}
+
+#loadingDiv .spinner-border {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-width: 3px;
+}
+
+/* Table styles */
+#projectsTable td, #projectsTable th {
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+#projectsTable thead th {
+    background: #191a23 !important;
+    color: #fff !important;
+    border-color: #191a23;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+#projectsTable tbody tr:hover {
+    background-color: #fafff0;
+}
+
+#projectsTable .progress {
+    background: #e8ecf0;
+}
+
+/* Status badges */
+.badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+/* Progress bar */
+.progress-bar {
+    transition: width 0.4s ease;
+}
+
+/* Buttons in table */
+.btn-sm {
+    padding: 4px 10px;
+    font-size: 13px;
+    border-radius: 8px;
+}
+
+/* Modal */
+.modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background: #191a23;
+    color: #fff;
+    border-radius: 16px 16px 0 0;
+    padding: 20px 24px;
+}
+
+.modal-header .btn-close { filter: invert(1); }
+
+.modal-body { padding: 28px; }
+
+/* Closure request button */
+.btn-outline-warning:hover {
+    background: #ffc107;
+    color: #191a23;
+}

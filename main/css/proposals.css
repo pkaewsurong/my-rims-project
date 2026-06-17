@@ -1,0 +1,7 @@
+/* main/css/proposals.css */
+#mainModal .modal-dialog { max-width: 860px; }
+.modal-header { background: #191a23; color: #fff; border-radius: 16px 16px 0 0; }
+.modal-header .btn-close { filter: invert(1); }
+#proposalsTable thead th { background: #191a23 !important; color: #fff !important; white-space: nowrap; }
+#proposalsTable tbody tr:hover { background: #fafff0; }
+#proposalsTable td { font-size: 14px; vertical-align: middle; }

@@ -1,0 +1,4 @@
+/* main/css/archives.css */
+#archivesTable thead th { background:#191a23!important; color:#fff!important; }
+#archivesTable tbody tr:hover { background:#fafff0; }
+.access-badge { padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600; }

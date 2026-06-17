@@ -1,0 +1,4 @@
+/* main/css/admin.css */
+#adminTable thead th { background:#191a23!important; color:#fff!important; }
+#adminTable tbody tr:hover { background:#fafff0; }
+.tab-selector { border-bottom: 3px solid #b9ff66; }
