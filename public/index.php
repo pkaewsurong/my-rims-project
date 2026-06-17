@@ -1,5 +1,14 @@
 <?php
-// public/index.php - Vercel Router pointing to the main/ directory transparently
+// Include database first to establish connection for session handler
+require_once __DIR__ . '/../config/database.php';
+
+// Use database sessions on Vercel (serverless has no persistent filesystem)
+$is_vercel = getenv('VERCEL') !== false || isset($_SERVER['VERCEL']);
+if ($is_vercel && isset($pdo)) {
+    require_once __DIR__ . '/../includes/DatabaseSessionHandler.php';
+    $handler = new DatabaseSessionHandler($pdo);
+    session_set_save_handler($handler, true);
+}
 
 $request_uri = $_SERVER['REQUEST_URI'];
 $parsed_url = parse_url($request_uri);
