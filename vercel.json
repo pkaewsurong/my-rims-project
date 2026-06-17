@@ -45,6 +45,10 @@
       "dest": "/main/$1"
     },
     {
+      "src": "/(css|js)/(.*\\.(css|js|png|jpg|jpeg|gif|svg|ico|pdf|txt|zip|doc|docx|xls|xlsx|ppt|pptx))$",
+      "dest": "/main/$1/$2"
+    },
+    {
       "src": "/(.*)",
       "dest": "/api/index.php"
     }
